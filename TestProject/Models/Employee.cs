@@ -9,7 +9,6 @@
         public char Gender { get; set; }
         public int DepartmentId { get; set; }
         public int ProgramingLanguageId { get; set; }
-        public string DepartmentName { get; set; } = string.Empty;
         public string ProgramingLanguageName { get; set; } = string.Empty;
     }
 }

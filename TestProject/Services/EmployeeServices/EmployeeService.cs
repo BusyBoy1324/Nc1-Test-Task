@@ -34,7 +34,6 @@ namespace TestProject.Services.EmployeeServices
             Employee employee = GetMappedModel(employeeDto);
             employee.DepartmentId = department.Id;
             employee.ProgramingLanguageId = programingLanguage.Id;
-            employee.DepartmentName = department.Name;
             employee.ProgramingLanguageName = programingLanguage.Name;
             _context.Add(employee);
             await SaveAsync();

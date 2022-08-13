@@ -36,7 +36,7 @@
 			                <RadzenLabel Text="Age" />
 		                </div>
 		                <div class="col-md-8">
-			                <RadzenNumeric style="width: 100%;" Name="Price" @bind-Value="employee.Age" />
+			                <RadzenNumeric style="width: 100%;" Name="Age" @bind-Value="employee.Age" />
 		                </div>
 	                </div>
 	                <div class="row">
@@ -53,7 +53,7 @@
 			                <RadzenLabel Text="Operation Type" />
 		                </div>
 		                <div class="col-md-8">
-			                <RadzenDropDown @bind-Value="employee.DepartmentName" AllowClear="true" Placeholder="Select operation type" Data="@DepartmentService.Departments" style="width: 100%;" TextProperty="Name" ValueProperty="Name" Name="Name">
+			                <RadzenDropDown @bind-Value="employee.DepartmentId" AllowClear="true" Placeholder="Select operation type" Data="@DepartmentService.Departments" style="width: 100%;" TextProperty="Id" ValueProperty="Id" Name="Id">
 			                </RadzenDropDown>
 		                </div>
 	                </div>
@@ -62,7 +62,7 @@
 			                <RadzenLabel Text="Operation Type" />
 		                </div>
 		                <div class="col-md-8">
-			                <RadzenDropDown @bind-Value="employee.ProgramingLanguageName" AllowClear="true" Placeholder="Select operation type" Data="@ProgramingService.ProgramingLanguages" style="width: 100%;" TextProperty="Languages" ValueProperty="Languages" Name="Languages">
+			                <RadzenDropDown @bind-Value="employee.ProgramingLanguageName" AllowClear="true" Placeholder="Select operation type" Data="@ProgramingService.ProgramingLanguages" style="width: 100%;" TextProperty="Name" ValueProperty="Name" Name="Name">
 			                </RadzenDropDown>
 		                </div>
 	                </div>
