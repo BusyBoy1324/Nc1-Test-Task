@@ -1,0 +1,84 @@
+﻿@page "/department/edit/{id:int}"
+@inject IDepartmentService DepartmentService
+@inject NavigationManager Navigation
+
+<h3>Editing @department.Name</h3>
+
+@if (ErrorMessage != null)
+{
+	<input type="text" placeholder="@ErrorMessage" readonly="readonly"/>
+}
+
+<RadzenTemplateForm Data="@department" Submit="@((Department args) => { SubmitAsync(args); })">
+        <div class="row">
+            <div class="col-md-6">
+                <RadzenFieldset Text="Editing Department">
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Id" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenNumeric style="width: 100%;" @bind-Value="department.Id" ReadOnly/>
+                        </div>
+                    </div>
+                     <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Name" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%;" @bind-Value="department.Name" />
+                        </div>
+                    </div>
+	                <div class="row">
+                       <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Floor" />
+                        </div>
+                        <div class="col-md-8">
+                           <RadzenNumeric style="width: 100%;" Name="Price" @bind-Value="department.Floor" />
+                        </div>
+                     </div>
+	                <div class="row justify-content-center">
+                        <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
+                            <RadzenButton ButtonType="ButtonType.Submit" Icon="check_circle" ButtonStyle="ButtonStyle.Success" Text="Edit" />
+                        </div>
+                    </div>
+	            </RadzenFieldset>
+            </div>
+        </div>
+</RadzenTemplateForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public string ErrorMessage { get; set; }
+
+    Department department = new();
+
+	protected override async Task OnParametersSetAsync()
+    {
+		if (Id != null)
+		{
+			try
+			{
+				department = await DepartmentService.GetByIdAsync(Id);
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = ex.Message;
+			}
+		}
+	}
+
+	private async Task SubmitAsync(Department agrs)
+	{
+		try
+		{
+			await DepartmentService.UpdateAsync(department);
+			Navigation.NavigateTo("departments");
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
+	}
+}

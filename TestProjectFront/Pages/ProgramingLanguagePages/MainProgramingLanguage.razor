@@ -1,0 +1,74 @@
+﻿@page "/programinglanguages"
+@inject IProgramingLanguageService ProgramingService
+@inject NavigationManager Navigation
+
+<PageTitle>Programing Languages</PageTitle>
+
+<h3>Programing Languages</h3>
+
+@if (ErrorMessage != null)
+{
+	<input type="text" placeholder="@ErrorMessage" readonly="readonly"/>
+}
+
+<RadzenButton Icon="add_circle_outline" Text="Create" Click="@CreateClick" />
+<table class="table table-striped table-bordered bg-light">
+	<thead>
+	<tr>
+		<th>Name</th>
+		<th></th>
+	</tr>
+	</thead>
+	<tbody>
+	@foreach (var programingLanguage in ProgramingService.ProgramingLanguages)
+	{
+		<tr>
+			<td>@programingLanguage.Name</td>
+			<td>
+				<RadzenButton Icon="check_circle" ButtonStyle="ButtonStyle.Success" Text="Edit" Click="@((args) => EditClick(programingLanguage.Id))" />
+				<RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Text="Delete" Click="@((args) => DeleteAsync(programingLanguage.Id))" />
+			</td>
+		</tr>
+	}
+	</tbody>
+</table>
+
+@code {
+	[Parameter]
+	public string ErrorMessage { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			await ProgramingService.GetAllAsync();
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
+	}
+
+	private void EditClick(int id)
+	{
+		Navigation.NavigateTo($"/programinglanguage/edit/{id}");
+	}
+
+	private async Task DeleteAsync(int id)
+	{
+		try
+		{
+			ProgramingService.ProgramingLanguages = await ProgramingService.DeleteAsync(id);
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
+
+	}
+
+	private void CreateClick()
+	{
+		Navigation.NavigateTo("/programinglanguage");
+	}
+}

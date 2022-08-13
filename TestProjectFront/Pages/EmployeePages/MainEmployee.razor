@@ -1,0 +1,84 @@
+﻿@page "/employees"
+@inject IEmployeeService EmployeeService
+@inject NavigationManager Navigation
+
+<PageTitle>Employees</PageTitle>
+
+<h3>Employees</h3>
+
+@if (ErrorMessage != null)
+{
+	<input type="text" placeholder="@ErrorMessage" readonly="readonly"/>
+}
+
+<RadzenButton Icon="add_circle_outline" Text="Create" Click="@CreateClick" />
+<table class="table table-striped table-bordered bg-light">
+	<thead>
+	<tr>
+		<th>Name</th>
+		<th>Surname</th>
+		<th>Age</th>
+		<th>Gender</th>
+		<th>Department</th>
+		<th>Programing Language</th>
+		<th></th>
+	</tr>
+	</thead>
+	<tbody>
+	@foreach (var employee in EmployeeService.Employees)
+	{
+		<tr>
+			<td>@employee.Name</td>
+			<td>@employee.Surname</td>
+			<td>@employee.Age</td>
+			<td>@employee.Gender</td>
+			<td>@employee.DepartmentName</td>
+			<td>@employee.ProgramingLanguageName</td>
+			<td>
+				<RadzenButton Icon="check_circle" ButtonStyle="ButtonStyle.Success" Text="Edit" Click="@((args) => EditClick(employee.Id))" />
+				<RadzenButton Icon="delete" ButtonStyle="ButtonStyle.Danger" Text="Delete" Click="@((args) => DeleteAsync(employee.Id))" />
+			</td>
+		</tr>
+	}
+	</tbody>
+</table>
+
+@code {
+	[Parameter]
+	public string ErrorMessage { get; set; }
+
+	protected override async Task OnInitializedAsync()
+	{
+		try
+		{
+			await EmployeeService.GetAllAsync();
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
+	}
+
+	private void EditClick(int id)
+	{
+		Navigation.NavigateTo($"/employee/edit/{id}");
+	}
+
+	private async Task DeleteAsync(int id)
+	{
+		try
+		{
+			EmployeeService.Employees = await EmployeeService.DeleteAsync(id);
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
+
+	}
+
+	private void CreateClick()
+	{
+		Navigation.NavigateTo("/employee");
+	}
+}

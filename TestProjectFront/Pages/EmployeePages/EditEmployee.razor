@@ -1,0 +1,131 @@
+﻿@page "/employee/edit/{id:int}"
+@inject IEmployeeService EmployeeService
+@inject IProgramingLanguageService ProgramingService
+@inject IDepartmentService DepartmentService
+@inject NavigationManager Navigation
+
+<h3>Editing @employee.Name</h3>
+
+@if (ErrorMessage != null)
+{
+	<input type="text" placeholder="@ErrorMessage" readonly="readonly"/>
+}
+
+<RadzenTemplateForm Data="@employee" Submit="@((Employee args) => { SubmitAsync(args); })">
+        <div class="row">
+            <div class="col-md-6">
+                <RadzenFieldset Text="Editing Employee">
+                    <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Name" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%;" @bind-Value="employee.Name" />
+                        </div>
+                    </div>
+					 <div class="row">
+                        <div class="col-md-4 align-items-center d-flex">
+                            <RadzenLabel Text="Surname" />
+                        </div>
+                        <div class="col-md-8">
+                            <RadzenTextBox style="width: 100%;" @bind-Value="employee.Surname" />
+                        </div>
+                    </div>
+	                <div class="row">
+		                <div class="col-md-4 align-items-center d-flex">
+			                <RadzenLabel Text="Age" />
+		                </div>
+		                <div class="col-md-8">
+			                <RadzenNumeric style="width: 100%;" Name="Price" @bind-Value="employee.Age" />
+		                </div>
+	                </div>
+	                <div class="row">
+		                <div class="col-md-4 align-items-center d-flex">
+			                <RadzenLabel Text="Gender" />
+		                </div>
+		                <div class="col-md-8">
+			                <RadzenDropDown @bind-Value="employee.Gender" AllowClear="true" Placeholder="Select operation type" Data="@genders" style="width: 100%;" TextProperty="Genger" ValueProperty="Gender" Name="Gender">
+			                </RadzenDropDown>
+		                </div>
+	                </div>
+	                <div class="row">
+		                <div class="col-md-4 align-items-center d-flex">
+			                <RadzenLabel Text="Operation Type" />
+		                </div>
+		                <div class="col-md-8">
+			                <RadzenDropDown @bind-Value="employee.DepartmentName" AllowClear="true" Placeholder="Select operation type" Data="@DepartmentService.Departments" style="width: 100%;" TextProperty="Name" ValueProperty="Name" Name="Name">
+			                </RadzenDropDown>
+		                </div>
+	                </div>
+	                <div class="row">
+		                <div class="col-md-4 align-items-center d-flex">
+			                <RadzenLabel Text="Operation Type" />
+		                </div>
+		                <div class="col-md-8">
+			                <RadzenDropDown @bind-Value="employee.ProgramingLanguageName" AllowClear="true" Placeholder="Select operation type" Data="@ProgramingService.ProgramingLanguages" style="width: 100%;" TextProperty="Languages" ValueProperty="Languages" Name="Languages">
+			                </RadzenDropDown>
+		                </div>
+	                </div>
+                     <div class="row justify-content-center">
+                        <div class="col-md-12 d-flex align-items-end justify-content-center" style="margin-top: 16px;">
+                            <RadzenButton ButtonType="ButtonType.Submit" Icon="check_circle" ButtonStyle="ButtonStyle.Success" Text="Edit" />
+                        </div>
+                    </div>
+	            </RadzenFieldset>
+            </div>
+        </div>
+</RadzenTemplateForm>
+
+@code {
+    [Parameter]
+    public int Id { get; set; }
+    public string ErrorMessage { get; set; }
+
+    Employee employee = new();
+
+	List<char> genders = new List<char> {
+		'W', 
+		'M'
+	};
+
+    protected override async Task OnInitializedAsync()
+    {
+	    try
+	    {
+		    await ProgramingService.GetAllAsync();
+		    await DepartmentService.GetAllAsync();
+	    }
+	    catch (Exception ex)
+	    {
+		    ErrorMessage = ex.Message;
+	    }
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+		if (Id != null)
+		{
+			try
+			{
+				employee = await EmployeeService.GetByIdAsync(Id);
+			}
+			catch (Exception ex)
+			{
+				ErrorMessage = ex.Message;
+			}
+		}
+	}
+
+	private async Task SubmitAsync(Employee agrs)
+	{
+		try
+		{
+			await EmployeeService.UpdateAsync(employee);
+			Navigation.NavigateTo("/employees");
+		}
+		catch (Exception ex)
+		{
+			ErrorMessage = ex.Message;
+		}
+	}
+}
